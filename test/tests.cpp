@@ -20,11 +20,12 @@ TEST(SimpleSearch, Test_1) {
     ASSERT_EQ(searcher.process("a"), "abd");
 }
 
-TEST(SimpleSearch, Sample) {
+TEST(Search, Sample) {
     Tree searcher;
     searcher.add({"pelun", "pelun", "pehrr"});
     ASSERT_EQ(searcher.process("pe"), "pelun");
     ASSERT_EQ(searcher.update("h"), "pehrr");
     searcher.add({"pehem", "pehem", "pehem"});
     ASSERT_EQ(searcher.process("pe"), "pehem");
+    ASSERT_EQ(searcher.update("hem"), "pehem");
 }
