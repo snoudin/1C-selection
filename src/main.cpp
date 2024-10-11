@@ -1,4 +1,5 @@
 #include "tree.hpp"
+#include "cli.hpp"
 
 int main() {
     Tree processor;

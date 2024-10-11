@@ -2,11 +2,24 @@
 
 #include <iostream>
 #include <string>
+#include <stringstream>
 #include <vector>
 
 std::vector<std::string> purify(const std::string& line) {
     std::vector<std::string> result;
-    //TODO
+    std::stringstream cin(line);
+    std::string word;
+    while (cin >> word) {
+        std::string cleared;
+        for (char c : word) {
+            if (c == '-' or c == '_' or std::isalpha(c) or std::isdigit(c)) {
+                cleared += c;
+            }
+        }
+        if (cleared.size() > 0) {
+            result.push_back(cleared);
+        }
+    }
     return result;
 }
 
@@ -38,6 +51,7 @@ void process_queries(auto& processor) {
 
 void print_help() {
     std::cout << "Welcome to WordSearcher" << std::endl;
+    std::cout << "Currently supported characters are letters, digits, \'-\' and \'_\'" << std::endl;
     std::cout << "Following commands are supported:" << std::endl;
     std::cout << "\"add_text\" to add line of text as set of words to dictionary" << std::endl;
     std::cout << "The text should be given on a separate line" << std::endl;
