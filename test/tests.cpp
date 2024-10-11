@@ -19,3 +19,12 @@ TEST(SimpleSearch, Test_1) {
     searcher.add({"abc", "abd", "abd"});
     ASSERT_EQ(searcher.process("a"), "abd");
 }
+
+TEST(SimpleSearch, Sample) {
+    Tree searcher;
+    searcher.add({"pelun", "pelun", "pehrr"});
+    ASSERT_EQ(searcher.process("pe"), "pelun");
+    ASSERT_EQ(searcher.update("h"), "pehrr");
+    searcher.add({"pehem", "pehem", "pehem"});
+    ASSERT_EQ(searcher.process("pe"), "pehem");
+}
