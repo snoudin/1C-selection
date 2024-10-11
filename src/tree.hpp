@@ -1,7 +1,8 @@
 #pragma once
 
 #include <map>
-
+#include <string>
+#include <vector>
 
 class Tree {
   private:
@@ -35,7 +36,7 @@ class Tree {
         //TODO
     }
 
-    void add(std::vector<std::string>> words) {
+    void add(std::vector<std::string> words) {
         for (const auto& word : words) {
             add(word);
         }

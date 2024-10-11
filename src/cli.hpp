@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include <stringstream>
+#include <sstream>
 #include <vector>
 
 std::vector<std::string> purify(const std::string& line) {
@@ -31,8 +31,8 @@ void process_queries(auto& processor) {
         if (type == "add_text") {
             std::getline(std::cin, _); // fix cin-getline conflict
             std::string line;
-            std::getline(std::cin, purify(line));
-            processor.add(line);
+            std::getline(std::cin, line);
+            processor.add(purify(line));
         } else if (type == "find") {
             std::string query;
             std::cin >> query;

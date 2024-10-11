@@ -2,8 +2,8 @@
 #include "cli.hpp"
 
 int main() {
-    Tree processor;
-    print_help(processor);
+    print_help();
 
-    process_queries();
+    Tree processor;
+    process_queries(processor);
 }
