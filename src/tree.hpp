@@ -45,6 +45,18 @@ class Tree {
     Node* position = nullptr;
     std::string current = "";
 
+    std::string find_best() const {
+        std::string answer = current;
+        auto best = position;
+        auto next = best->most_popular();
+        while (best != next.first) {
+            best = next.first;
+            answer += next.second;
+            next = best->most_popular();
+        }
+        return answer;
+    }
+
   public:
     Tree() = default;
 
@@ -81,18 +93,6 @@ class Tree {
         for (const auto& word : words) {
             add(word);
         }
-    }
-
-    std::string find_best() const {
-        std::string answer = current;
-        auto best = position;
-        auto next = best->most_popular();
-        while (best != next.first) {
-            best = next.first;
-            answer += next.second;
-            next = best->most_popular();
-        }
-        return answer;
     }
 
     std::string process(const std::string& query) {
