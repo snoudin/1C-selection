@@ -28,8 +28,8 @@ class Tree {
         }
 
         void update(char c, int old_cnt, int new_cnt) {
-            best.erase(std::make_pair(c, old_cnt));
-            best.insert(std::make_pair(c, new_cnt));
+            best.erase(std::make_pair(-old_cnt, c)); // max number, least character
+            best.insert(std::make_pair(-new_cnt, c));
             children[c].second = new_cnt;
             max_subtree = std::max(max_subtree, new_cnt);
         }
@@ -55,6 +55,9 @@ class Tree {
     Tree& operator=(Tree&&) = default;
 
     void add(const std::string& word) { // change counters
+        if (root == nullptr) {
+            root = new Node();
+        }
         Node* cur = root;
         std::vector<Node*> path;
         path.reserve(word.size());
