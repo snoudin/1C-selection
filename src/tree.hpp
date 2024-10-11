@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <map>
 #include <set>
 #include <string>
@@ -10,24 +11,27 @@ class Tree {
     struct Node {
         std::map<char, std::pair<Node*, int>> children;
         std::set<std::pair<int, char>> best; // tree-based versions are faster on such sizes
-        int collisions = 0;
-        int max_subtree = 0;
+        int collisions = 0; // how many repetition has this exact word
+        int max_subtree = 0; // maximum repetitions of words that start with this prefix
 
-        std::pair<int, Node*> most_popular() {
-            if (collisions == max_subtree) return std::make_pair(collisions, this);
+        std::pair<Node*, char> most_popular() {
+            if (collisions == max_subtree) return std::make_pair(this, '\0');
             auto [cnt, c] = *best.begin();
-            return std::make_pair(cnt, children[c].first);
+            return std::make_pair(children[c].first, c);
         }
 
-        Node* add(char c) { // increases counters
-            //TODO
-        }
-
-        Node* descend(char c) { // for search only
+        Node* descend(char c) { // does not change counters
             if (children[c].first == nullptr) {
                 children[c] = { new Node(), 0 };
             }
             return children[c].first;
+        }
+
+        void update(char c, int old_cnt, int new_cnt) {
+            best.erase(std::make_pair(c, old_cnt));
+            best.insert(std::make_pair(c, new_cnt));
+            children[c].second = new_cnt;
+            max_subtree = std::max(max_subtree, new_cnt);
         }
 
         ~Node() {
@@ -50,12 +54,24 @@ class Tree {
     Tree& operator=(const Tree&) = delete;
     Tree& operator=(Tree&&) = default;
 
-    void add(const std::string& word) {
+    void add(const std::string& word) { // change counters
         Node* cur = root;
+        std::vector<Node*> path;
+        path.reserve(word.size());
         for (char c : word) {
-            cur = cur->add(c);
+            path.push_back(cur);
+            cur = cur->descend(c);
         }
         cur->collisions += 1;
+        cur->max_subtree = std::max(cur->max_subtree, cur->collisions);
+        for (int i = word.size() - 1; i + 1 > 0; --i) {
+            char c = word[i];
+            Node* from = path[i];
+            auto [next, cur_cnt] = from->children[c];
+            if (next->max_subtree > cur_cnt) {
+                from->update(c, cur_cnt, next->max_subtree);
+            }
+        }
     }
 
     void add(std::vector<std::string> words) {
@@ -65,7 +81,15 @@ class Tree {
     }
 
     std::string find_best() const {
-        
+        std::string answer = current;
+        auto best = position;
+        auto next = best->most_popular();
+        while (best != next.first) {
+            best = next.first;
+            answer += next.second;
+            next = best->most_popular();
+        }
+        return answer;
     }
 
     std::string process(const std::string& query) {
