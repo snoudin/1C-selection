@@ -59,7 +59,8 @@ void print_help() {
     std::cout << "Currently supported characters are letters, digits, \'-\' and \'_\'" << std::endl;
     std::cout << "Following commands are supported:" << std::endl;
     std::cout << "\"add_text\" to add line of text as set of words to dictionary" << std::endl;
-    std::cout << "The text should be given on a separate line" << std::endl;
+    std::cout << "The text should be given on a single separate line." < std::endl;
+    std::cout << "Words can be separated by any standard delimeter (space, tabulation, etc.)" << std::endl;
     std::cout << "\"find\" to search best collocation for given prefix in dictionary" << std::endl;
     std::cout << "The prefix should be given on the same line" << std::endl;
     std::cout << "\"write\" to write few extra characters to the end of current query" << std::endl;
