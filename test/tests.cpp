@@ -7,6 +7,10 @@ TEST(Purification, Test_1) {
 }
 
 TEST(Purification, Test_2) {
+    ASSERT_EQ(purify_string("abc.7845235,"), "abc7845235");
+}
+
+TEST(Purification, Test_3) {
     ASSERT_EQ(purify("abcd!   :  a5v,."), std::vector<std::string>({"abcd", "a5v"}));
 }
 

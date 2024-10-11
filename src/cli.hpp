@@ -5,17 +5,22 @@
 #include <sstream>
 #include <vector>
 
+std::string purify_string(const std::string& word) {
+    std::string cleared;
+    for (char c : word) {
+        if (c == '-' or c == '_' or std::isalpha(c) or std::isdigit(c)) {
+            cleared += c;
+        }
+    }
+    return cleared;
+}
+
 std::vector<std::string> purify(const std::string& line) {
     std::vector<std::string> result;
     std::stringstream cin(line);
     std::string word;
     while (cin >> word) {
-        std::string cleared;
-        for (char c : word) {
-            if (c == '-' or c == '_' or std::isalpha(c) or std::isdigit(c)) {
-                cleared += c;
-            }
-        }
+        std::string cleared(std::move(purify_string(word)));
         if (cleared.size() > 0) {
             result.push_back(cleared);
         }
@@ -37,12 +42,12 @@ void process_queries(auto& processor) {
             std::string query;
             std::cin >> query;
             std::getline(std::cin, _); // fix cin-getline conflict
-            std::cout << processor.process(query) << std::endl;
+            std::cout << processor.process(purify_string(query)) << std::endl;
         } else if (type == "write") {
             std::string suffix;
             std::cin >> suffix;
             std::getline(std::cin, _); // fix cin-getline conflict
-            std::cout << processor.update(suffix) << std::endl;
+            std::cout << processor.update(purify_string(suffix)) << std::endl;
         } else {
             std::cout << "unsupported query, try again" << std::endl;
         }
