@@ -1,28 +1,39 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
 class Tree {
   private:
     struct Node {
-        std::map<std::pair<int, char>, Node*> children;
+        std::map<char, std::pair<Node*, int>> children;
+        std::set<std::pair<int, char>> best; // tree-based versions are faster on such sizes
         int collisions = 0;
         int max_subtree = 0;
 
-        std::pair<int, Node*> most_popular() const {
-            if (collisions == max_subtree) return {collisions, this};
-            auto [k, v] = *children.begin();
-            return {k.first, v};
+        std::pair<int, Node*> most_popular() {
+            if (collisions == max_subtree) return std::make_pair(collisions, this);
+            auto [cnt, c] = *best.begin();
+            return std::make_pair(cnt, children[c].first);
         }
 
-        Node* add(char c) const { // increases counters
+        Node* add(char c) { // increases counters
             //TODO
         }
 
-        Node* descend(char c) const { // for search only
-            //TODO
+        Node* descend(char c) { // for search only
+            if (children[c].first == nullptr) {
+                children[c] = { new Node(), 0 };
+            }
+            return children[c].first;
+        }
+
+        ~Node() {
+            for (auto [c, node] : children) {
+                delete node.first;
+            }
         }
     };
    
@@ -44,6 +55,7 @@ class Tree {
         for (char c : word) {
             cur = cur->add(c);
         }
+        cur->collisions += 1;
     }
 
     void add(std::vector<std::string> words) {
@@ -52,11 +64,34 @@ class Tree {
         }
     }
 
-    std::string process(const std::string& query) const {
+    std::string find_best() const {
+        
+    }
+
+    std::string process(const std::string& query) {
+        position = root;
+        current = query;
+        for (char c : query) {
+            position = position->descend(c);
+        }
+        if (position->max_subtree > 0) {
+            return std::move(find_best());
+        }
         return "No collisions found";
     }
 
-    std::string update(const std::string& suffix) const {
+    std::string update(const std::string& suffix) {
+        current += suffix;
+        for (char c : suffix) {
+            position = position->descend(c);
+        }
+        if (position->max_subtree > 0) {
+            return std::move(find_best());
+        }
         return "No collisions found";
+    }
+
+    ~Tree() {
+        delete root;
     }
 };
